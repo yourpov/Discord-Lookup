@@ -41,3 +41,10 @@ go run main.go
 ```html
 http://localhost:<port>/lookup?id=<DiscordID>
 ```
+
+
+## Examples
+
+<img width="939" height="437" alt="image" src="https://github.com/user-attachments/assets/7254cb49-cf9f-45ca-bc67-fc0624de02f7" />
+
+<img width="1259" height="963" alt="image" src="https://github.com/user-attachments/assets/7fc4b143-8fa5-46a9-9a63-13f84e5ac650" />
