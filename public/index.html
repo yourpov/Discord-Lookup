@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Discord Lookup</title>
+  <style>
+    body {
+      background: #0e0f10;
+      color: #f2f3f5;
+      font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .card {
+      background: #1e1f22;
+      border-radius: 12px;
+      width: 480px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.4);
+    }
+
+    h1 {
+      font-size: 20px;
+      margin: 0 0 16px 0;
+      font-weight: 600;
+      color: #f2f3f5;
+    }
+
+    .row { display: flex; gap: 12px; align-items: center; }
+    .row input {
+      flex: 1;
+      padding: 8px 12px;
+      background: #313338;
+      border: none;
+      border-radius: 6px;
+      color: #f2f3f5;
+    }
+    .row button {
+      background: #5865f2;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 14px;
+      color: #fff;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .row button:hover { background: #4752c4; }
+
+    /* profile section */
+    .profile { display: flex; align-items: center; margin-top: 20px; }
+    .profile img {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      border: 2px solid #313338;
+    }
+    .profile-info { margin-left: 12px; }
+    .profile-info .name { font-size: 18px; font-weight: 600; }
+    .profile-info .created { font-size: 13px; color: #b9bbbe; }
+
+    /* NEW: banner style */
+    .banner {
+      margin-top: 16px;
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+      display: none; /* hidden until loaded */
+    }
+
+    .badges { margin-top: 6px; }
+    .badge {
+      display: inline-block;
+      background: #232428;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin-right: 6px;
+    }
+
+    .section-title {
+      margin-top: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #b9bbbe;
+    }
+
+    pre {
+      background: #2b2d31;
+      color: #f2f3f5;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      overflow: auto;
+      max-height: 280px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Discord Lookup</h1>
+    <div class="row">
+      <input id="uid" placeholder="Enter User ID" />
+      <button id="go">Lookup</button>
+    </div>
+
+    <!-- banner image -->
+    <img id="banner" class="banner" alt="banner" />
+
+    <div id="profile" class="profile" style="display:none;">
+      <img id="avatar" alt="avatar" />
+      <div class="profile-info">
+        <div class="name" id="name"></div>
+        <div class="created" id="created"></div>
+        <div class="badges" id="badges"></div>
+      </div>
+    </div>
+
+    <div class="section-title">Raw JSON</div>
+    <pre id="json">{}</pre>
+  </div>
+
+  <script>
+    const $ = sel => document.querySelector(sel);
+
+    $("#go").onclick = async () => {
+      const id = $("#uid").value.trim();
+      if (!id) return;
+      const res = await fetch(`/lookup?id=${encodeURIComponent(id)}`);
+      const data = await res.json();
+
+      $("#json").textContent = JSON.stringify(data, null, 2);
+
+      if (data.id) {
+        $("#profile").style.display = "flex";
+        $("#avatar").src = data.avatar || "";
+        $("#name").textContent = data.display_name || data.username;
+        $("#created").textContent = "Created: " + (data.created_at || "N/A");
+
+        // show banner if exists
+        const bannerEl = $("#banner");
+        if (data.banner) {
+          bannerEl.src = data.banner;
+          bannerEl.style.display = "block";
+        } else {
+          bannerEl.style.display = "none";
+        }
+
+        const badges = $("#badges");
+        badges.innerHTML = "";
+        (data.badges || []).forEach(b => {
+          const span = document.createElement("span");
+          span.className = "badge";
+          span.textContent = b;
+          badges.appendChild(span);
+        });
+      }
+    };
+  </script>
+</body>
+</html>
