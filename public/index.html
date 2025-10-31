@@ -49,7 +49,6 @@
     }
     .row button:hover { background: #4752c4; }
 
-    /* profile section */
     .profile { display: flex; align-items: center; margin-top: 20px; }
     .profile img {
       width: 64px; height: 64px;
@@ -60,14 +59,13 @@
     .profile-info .name { font-size: 18px; font-weight: 600; }
     .profile-info .created { font-size: 13px; color: #b9bbbe; }
 
-    /* NEW: banner style */
     .banner {
       margin-top: 16px;
       width: 100%;
       max-height: 180px;
       object-fit: cover;
       border-radius: 8px;
-      display: none; /* hidden until loaded */
+      display: none;
     }
 
     .badges { margin-top: 6px; }
@@ -108,7 +106,6 @@
       <button id="go">Lookup</button>
     </div>
 
-    <!-- banner image -->
     <img id="banner" class="banner" alt="banner" />
 
     <div id="profile" class="profile" style="display:none;">
@@ -141,7 +138,6 @@
         $("#name").textContent = data.display_name || data.username;
         $("#created").textContent = "Created: " + (data.created_at || "N/A");
 
-        // show banner if exists
         const bannerEl = $("#banner");
         if (data.banner) {
           bannerEl.src = data.banner;
