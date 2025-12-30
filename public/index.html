@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>discord lookup</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="main.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dc: { 
+              dark: '#0e0f10', 
+              bg: '#1e1f22', 
+              blue: '#5865f2', 
+              gray: '#313338' 
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body style="background: linear-gradient(135deg, #0e0f10, #1a1b1e);" class="min-h-screen text-gray-100">
+  
+  <div id="notif" class="fixed top-4 right-4 transform translate-x-[400px] opacity-0 transition-all">
+    <span id="msg"></span>
+  </div>
+
+  <div class="max-w-3xl mx-auto px-4 py-12">
+    
+    <div class="text-center mb-10">
+      <div class="flex items-center justify-center gap-3 mb-2">
+        <img src="img/Discord.png" alt="" class="w-10 h-10">
+        <h1 class="text-4xl font-bold title-grad">discord lookup</h1>
+      </div>
+      <p class="text-gray-500">find discord users by id</p>
+    </div>
+
+    <div class="glass rounded-xl p-6 mb-6">
+      <div class="flex gap-3">
+        <input 
+          id="uid" 
+          type="text"
+          class="flex-1 px-5 py-3 bg-dc-bg border-2 border-dc-gray rounded-lg text-white placeholder-gray-500 focus:border-dc-blue focus:outline-none transition"
+        >
+        <button 
+          id="search"
+          class="px-7 py-3 bg-dc-blue rounded-lg font-semibold text-white hover:bg-[#4752c4] transition flex items-center justify-center min-w-[100px]"
+        >
+          Search
+        </button>
+      </div>
+    </div>
+
+    <div id="none" class="text-center py-16">
+      <div class="text-7xl mb-4 opacity-15" style="animation: float 3s ease-in-out infinite;">🔍</div>
+      <p class="text-gray-500">enter a user id to start</p>
+    </div>
+
+    <div id="card" class="hidden show-profile">
+      
+      <div class="relative rounded-t-xl overflow-visible h-36">
+        <div class="overflow-hidden rounded-t-xl h-full">
+          <img id="banner" class="w-full h-full object-cover hidden" alt="">
+          <div id="banner-wrap" class="banner-grad w-full h-full"></div>
+        </div>
+        
+        <div class="absolute -bottom-12 left-5 z-20">
+          <div class="pfp-ring relative">
+            <img 
+              id="pfp" 
+              class="w-28 h-28 rounded-full border-6 border-[#2b2d31] bg-dc-gray hover:scale-105 transition cursor-pointer"
+              alt=""
+            >
+            <div id="status" class="absolute bottom-1 right-1 w-7 h-7 rounded-full border-[3px] border-[#2b2d31]"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-[#2b2d31] rounded-b-xl p-6 pt-16 border border-t-0 border-dc-gray">
+        
+        <div class="mb-5">
+          <h2 id="name" class="text-3xl font-bold text-gray-100 mb-1"></h2>
+          <p id="tag" class="text-lg text-gray-400 mb-3"></p>
+          
+          <div class="flex flex-wrap gap-3 text-base text-gray-400">
+            <div class="flex items-center gap-2 cursor-pointer hover:text-dc-blue transition" onclick="copyId(this.querySelector('span').textContent, this)">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"></path>
+                <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"></path>
+              </svg>
+              <span id="uid-text" class="font-mono"></span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+              </svg>
+              <span id="joined"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-5">
+          <div class="inline-flex px-4 py-2 bg-dc-bg border border-dc-gray rounded-lg">
+            <span id="type" class="text-base text-gray-200 font-medium"></span>
+          </div>
+        </div>
+
+        <div id="badge-wrap" class="mb-6 hidden">
+          <div class="text-sm font-semibold text-gray-500 mb-3">Badges</div>
+          <div id="badges" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mt-6">
+          <div class="stat-card rounded-lg p-5">
+            <div class="text-gray-500 text-sm font-semibold mb-2">Flags</div>
+            <div id="flags" class="text-xl font-bold text-gray-200 font-mono"></div>
+          </div>
+          <div class="stat-card rounded-lg p-5">
+            <div class="text-gray-500 text-sm font-semibold mb-2">Age</div>
+            <div id="age" class="text-xl font-bold text-gray-200"></div>
+          </div>
+        </div>
+
+        <div class="mt-4 space-y-2">
+          <a id="avatar-link" href="#" target="_blank" class="flex items-center gap-2 px-4 py-2.5 bg-dc-bg border border-dc-gray rounded-lg hover:border-dc-blue transition text-gray-300 hover:text-white text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            <span>Download Avatar</span>
+          </a>
+          <a id="banner-link-wrap" href="#" target="_blank" class="flex items-center gap-2 px-4 py-2.5 bg-dc-bg border border-dc-gray rounded-lg hover:border-dc-blue transition text-gray-300 hover:text-white text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            <span>Download Banner</span>
+          </a>
+        </div>
+
+        <div class="mt-6 pt-5 border-t border-dc-gray text-center">
+          <p class="text-gray-500 text-xs">
+            Love from <a href="https://discord.com/users/1055337846657007648" target="_blank" class="text-gray-400 hover:text-dc-blue transition">pov</a> 
+            <span class="text-gray-600">•</span> 
+            <a href="https://t.me/uhhhwhatever" target="_blank" class="text-gray-400 hover:text-dc-blue transition">@uhhhwhatever</a>
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
