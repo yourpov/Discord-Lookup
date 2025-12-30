@@ -42,9 +42,9 @@ http://localhost:<port>/lookup?id=<DiscordID>
 
 ## Examples
 
-> API Response: (http://localhost:<port>/lookup?id=DiscordID)
+> API Response: (http://localhost:port/lookup?id=DiscordID)
 <img alt="image" src="https://imgur.com/zAjCUQh.png" />
----
+
 
 HTML: (http://localhost:port)
 <img alt="image" src="https://i.imgur.com/AeGm4as.png" />
